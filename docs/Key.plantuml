@@ -1,0 +1,19 @@
+@startuml
+class "class Key final" {
++{method}Key();
++{method}Key(const Key& other);
++{method}Key(Key&& other);
++{method}Key(const uint8_t* value, size_t length);
++{method}~Key();
++{method}void clear();
++{method}std::shared_ptr<const uint8_t> key() const;
++{method}size_t length() const;
++{method}Key& operator=(const Key& other);
++{method}Key& operator=(Key&& other);
++{method}bool operator==(const Key& other) const;
++{method}bool operator!=(const Key& other) const;
++{method}operator bool() const;
++{method}operator std::string() const;
++{method}void set(const uint8_t* value, size_t length);
+}
+@enduml
