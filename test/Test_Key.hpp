@@ -103,8 +103,8 @@ TEST( TestKey, MoveConstructorShallProduceANonNullKeyIfOtherIsANonNullKeyAndOthe
 
 	Key nonNullKey( nonNullValue, nonNullValueLength );
 
-	ASSERT_NE( nullptr, nullKey.mKeyBuffer );
-	ASSERT_NE( 0, nullKey.mKeyLength );
+	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
+	ASSERT_NE( 0, nonNullKey.mKeyLength );
 
 	Key moveNonNullKey( std::move( nonNullKey ) );
 
@@ -112,6 +112,74 @@ TEST( TestKey, MoveConstructorShallProduceANonNullKeyIfOtherIsANonNullKeyAndOthe
 	ASSERT_NE( 0, moveNonNullKey.mKeyLength );
 	ASSERT_EQ( nonNullValueLength, moveNonNullKey.mKeyLength );
 	ASSERT_EQ( 0, std::memcmp( nonNullValue, moveNonNullKey.mKeyBuffer.get(), nonNullValueLength ) );
+
+	ASSERT_EQ( nullptr, nonNullKey.mKeyBuffer );
+	ASSERT_EQ( 0, nonNullKey.mKeyLength );
+}
+
+TEST( TestKey, ClearShallSetTheKeyAsNull )
+{
+	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nonNullKey( nonNullValue, nonNullValueLength );
+
+	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
+	ASSERT_NE( 0, nonNullKey.mKeyLength );
+
+	nonNullKey.clear();
+
+	ASSERT_EQ( nullptr, nonNullKey.mKeyBuffer );
+	ASSERT_EQ( 0, nonNullKey.mKeyLength );
+}
+
+TEST( TestKey, KeyShallReturnANullSharedPtrIfKeyIsNull )
+{
+	Key nullKey;
+
+	ASSERT_EQ( nullptr, nullKey.key() );
+}
+
+TEST( TestKey, KeyShallReturnANonNullSharedPtrIfKeyIsNonNull )
+{
+	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nonNullKey( nonNullValue, nonNullValueLength );
+
+	ASSERT_NE( nullptr, nonNullKey.key() );
+}
+
+TEST( TestKey, LengthShallReturnZeroForNullKey )
+{
+	Key nullKey;
+
+	ASSERT_EQ( 0, nullKey.length() );
+}
+
+TEST( TestKey, LengthShallReturnNonZeroForNonNullKey )
+{
+	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nonNullKey( nonNullValue, nonNullValueLength );
+
+	ASSERT_NE( 0, nonNullKey.length() );
+	ASSERT_EQ( nonNullValueLength, nonNullKey.length() );
+}
+
+TEST( TestKey, CopyAssignmentOperatorShallSetKeyToNullIfOtherIsANullKey )
+{
+	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Key nullKey;
+
+	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
+	ASSERT_NE( 0, nonNullKey.mKeyLength );
+
+	nonNullKey = nullKey;
 
 	ASSERT_EQ( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nonNullKey.mKeyLength );
