@@ -1,3 +1,8 @@
+/**
+ * Copyright ©2021. Brent Weichel. All Rights Reserved.
+ * Permission to use, copy, modify, and/or distribute this software, in whole
+ * or part by any means, without express prior written agreement is prohibited.
+ */
 #pragma once
 
 #include <cstdint>
@@ -183,4 +188,120 @@ TEST( TestKey, CopyAssignmentOperatorShallSetKeyToNullIfOtherIsANullKey )
 
 	ASSERT_EQ( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nonNullKey.mKeyLength );
+}
+
+TEST( TestKey, CopyAssignmentOperatorShallSetNullKeyToNonNullIfOtherIsANonNullKey )
+{
+	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nullKey;
+	Key nonNullKey( nonNullValue, nonNullValueLength );
+
+	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
+	ASSERT_EQ( 0, nullKey.mKeyLength );
+
+	nullKey = nonNullKey;
+
+	ASSERT_NE( nullptr, nullKey.mKeyBuffer );
+	ASSERT_NE( 0, nullKey.mKeyLength );
+	ASSERT_EQ( nonNullKey.mKeyLength, nullKey.mKeyLength );
+	ASSERT_EQ( 0, std::memcmp( nullKey.mKeyBuffer.get(), nonNullKey.mKeyBuffer.get(), nullKey.mKeyLength ) );
+	ASSERT_EQ( nullKey.mKeyBuffer, nonNullKeyBuffer.mKeyBuffer );
+}
+
+TEST( TestKey, CopyAssignmentOperatorShallSetNonNullKeyToNonNullIfOtherIsANonNullKey )
+{
+	static const uint8_t[] nonNullValueA = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueALength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	static const uint8_t[] nonNullValueB = { 0x03, 0x02, 0x01, 0x00 };
+	static const size_t nonNullValueBLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+
+	Key nonNullKeyA( nonNullValueA, nonNullValueALength );
+	Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
+
+	ASSERT_NE( nonNullKeyA.mKeyBuffer, nonNullKeyB.mKeyBuffer );
+
+	nonNullKeyA = nonNullKeyB;
+
+	ASSERT_EQ( nonNullKeyA.mKeyLength, nonNullKeyB.mKeyLength );
+	ASSERT_EQ( 0, std::memcmp( nonNullKeyA.mKeyBuffer.get(), nonNullKeyB.mKeyBuffer.get(), nonNullKeyA.mKeyLength ) );
+	ASSERT_EQ( nonNullKeyA.mKeyBuffer, nonNullKeyB.mKeyBuffer );
+}
+
+TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNullIfOtherIsANullKeyAndOtherShallBeANullKeyAfterward )
+{
+}
+
+TEST( TestKey, MoveAssignmentShallSetNullKeyToNonNullIfOtherIsANonNullKeyAndOtherShallBeANullKeyAfterward )
+{
+}
+
+TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNonNullIfOtherIsANonNullKeyAndOtherShallBeANullKeyAfterward )
+{
+}
+
+TEST( TestKey, EqualityOperatorShallReturnFalseIfKeyLengthsAreNotEqual )
+{
+}
+
+TEST( TestKey, EqualityOperatorShallReturnTrueIfBothKeysAreNull )
+{
+}
+
+TEST( TestKey, EqualityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndDifferingContent )
+{
+}
+
+TEST( TestKey, EqualityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndEqualContent )
+{
+}
+
+TEST( TestKey, InequalityOperatorShallReturnTrueIfKeyLengthsAreNotEqual )
+{
+}
+
+TEST( TestKey, InequalityOperatorShallReturnFalseIfBothKeysAreNull )
+{
+}
+
+TEST( TestKey, InequalityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndDifferingContent )
+{
+}
+
+TEST( TestKey, InequalityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndEqualContent )
+{
+}
+
+TEST( TestKey, BoolOperatorShallReturnFalseIfKeyIsNull )
+{
+}
+
+TEST( TestKey, BoolOperatorShallReturnTrueIfKeyIsNull )
+{
+}
+
+TEST( TestKey, StringOperatorShallReturnAnEmptyStringForANullKey )
+{
+}
+
+TEST( TestKey, StringOperatorShallReturnTheHexadecimalRepresentationOfTheKeyContentIfKeyIsNonNull )
+{
+}
+
+TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsZero )
+{
+}
+
+TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsNonZero )
+{
+}
+
+TEST( TestKey, SetShallSetTheKeyToNullIfLengthIsZeroAndValueIsNonNull )
+{
+}
+
+TEST( TestKey, SetShallSetTheKeyToNonNullIfValueIsNonNullAndLengthIsNonZero )
+{
 }
