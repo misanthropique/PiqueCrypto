@@ -14,7 +14,7 @@
 
 TEST( TestKey, DefaultConstructorShallProduceANullKeyWithZeroLength )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nullKey.mKeyLength );
@@ -22,7 +22,7 @@ TEST( TestKey, DefaultConstructorShallProduceANullKeyWithZeroLength )
 
 TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueEqualsNullptrAndLengthEqualsZero )
 {
-	Key nullValueZeroLength( nullptr, 0 );
+	Pique::Key nullValueZeroLength( nullptr, 0 );
 
 	ASSERT_EQ( nullptr, nullValueZeroLength.mKeyBuffer );
 	ASSERT_EQ( 0, nullValueZeroLength.mKeyLength );
@@ -30,7 +30,7 @@ TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueEqualsNullptrAndL
 
 TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueEqualsNullptrAndLengthDoesNotEqualZero )
 {
-	Key nullValueNonZeroLength( nullptr, 128 );
+	Pique::Key nullValueNonZeroLength( nullptr, 128 );
 
 	ASSERT_EQ( nullptr, nullValueNonZeroLength.mKeyBuffer );
 	ASSERT_EQ( 0, nullValueNonZeroLength.mKeyLength );
@@ -38,9 +38,9 @@ TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueEqualsNullptrAndL
 
 TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueDoesNotEqualNullptrAndLengthEqualsZero )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 
-	Key nonNullValueZeroLength( nonNullValue, 0 );
+	Pique::Key nonNullValueZeroLength( nonNullValue, 0 );
 
 	ASSERT_EQ( nullptr, nonNullValueZeroLength.mKeyBuffer );
 	ASSERT_EQ( 0, nonNullValueZeroLength.mKeyLength );
@@ -48,10 +48,10 @@ TEST( TestKey, AssignmentConstructorShallProduceANullKeyIfValueDoesNotEqualNullp
 
 TEST( TestKey, AssignmentConstructorShallProduceANonNullKeyIfValueDoesNotEqualNullptrAndLengthDoesNotEqualZero )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -62,8 +62,8 @@ TEST( TestKey, AssignmentConstructorShallProduceANonNullKeyIfValueDoesNotEqualNu
 
 TEST( TestKey, CopyConstructorShallProduceANullKeyIfOtherIsANullKey )
 {
-	Key nullKey;
-	Key copyNullKey( nullKey );
+	Pique::Key nullKey;
+	Pique::Key copyNullKey( nullKey );
 
 	ASSERT_EQ( nullptr, copyNullKey.mKeyBuffer );
 	ASSERT_EQ( 0, copyNullKey.mKeyLength );
@@ -71,11 +71,11 @@ TEST( TestKey, CopyConstructorShallProduceANullKeyIfOtherIsANullKey )
 
 TEST( TestKey, CopyConstructorShallProduceANonNullKeyIfOtherIsANonNullKey )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
-	Key copyNonNullKey( nonNullKey );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key copyNonNullKey( nonNullKey );
 
 	ASSERT_NE( nullptr, copyNonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, copyNonNullKey.mKeyLength );
@@ -87,12 +87,12 @@ TEST( TestKey, CopyConstructorShallProduceANonNullKeyIfOtherIsANonNullKey )
 
 TEST( TestKey, MoveConstructorShallProduceANullKeyIfOtherIsANullKeyAndOtherShallBeNullAfterward )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nullKey.mKeyLength );
 
-	Key moveNullKey( std::move( nullKey ) );
+	Pique::Key moveNullKey( std::move( nullKey ) );
 
 	ASSERT_EQ( nullptr, moveNullKey.mKeyBuffer );
 	ASSERT_EQ( 0, moveNullKey.mKeyLength );
@@ -103,15 +103,15 @@ TEST( TestKey, MoveConstructorShallProduceANullKeyIfOtherIsANullKeyAndOtherShall
 
 TEST( TestKey, MoveConstructorShallProduceANonNullKeyIfOtherIsANonNullKeyAndOtherShallBeNullAfterward )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
 
-	Key moveNonNullKey( std::move( nonNullKey ) );
+	Pique::Key moveNonNullKey( std::move( nonNullKey ) );
 
 	ASSERT_NE( nullptr, moveNonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, moveNonNullKey.mKeyLength );
@@ -124,10 +124,10 @@ TEST( TestKey, MoveConstructorShallProduceANonNullKeyIfOtherIsANonNullKeyAndOthe
 
 TEST( TestKey, ClearShallSetTheKeyAsNull )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -140,34 +140,34 @@ TEST( TestKey, ClearShallSetTheKeyAsNull )
 
 TEST( TestKey, KeyShallReturnANullSharedPtrIfKeyIsNull )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_EQ( nullptr, nullKey.key() );
 }
 
 TEST( TestKey, KeyShallReturnANonNullSharedPtrIfKeyIsNonNull )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.key() );
 }
 
 TEST( TestKey, LengthShallReturnZeroForNullKey )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_EQ( 0, nullKey.length() );
 }
 
 TEST( TestKey, LengthShallReturnNonZeroForNonNullKey )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( 0, nonNullKey.length() );
 	ASSERT_EQ( nonNullValueLength, nonNullKey.length() );
@@ -175,11 +175,11 @@ TEST( TestKey, LengthShallReturnNonZeroForNonNullKey )
 
 TEST( TestKey, CopyAssignmentOperatorShallSetKeyToNullIfOtherIsANullKey )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
-	Key nullKey;
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nullKey;
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -192,11 +192,11 @@ TEST( TestKey, CopyAssignmentOperatorShallSetKeyToNullIfOtherIsANullKey )
 
 TEST( TestKey, CopyAssignmentOperatorShallSetNullKeyToNonNullIfOtherIsANonNullKey )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nullKey;
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nullKey;
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nullKey.mKeyLength );
@@ -207,19 +207,19 @@ TEST( TestKey, CopyAssignmentOperatorShallSetNullKeyToNonNullIfOtherIsANonNullKe
 	ASSERT_NE( 0, nullKey.mKeyLength );
 	ASSERT_EQ( nonNullKey.mKeyLength, nullKey.mKeyLength );
 	ASSERT_EQ( 0, std::memcmp( nullKey.mKeyBuffer.get(), nonNullKey.mKeyBuffer.get(), nullKey.mKeyLength ) );
-	ASSERT_EQ( nullKey.mKeyBuffer, nonNullKeyBuffer.mKeyBuffer );
+	ASSERT_EQ( nullKey.mKeyBuffer, nonNullKey.mKeyBuffer );
 }
 
 TEST( TestKey, CopyAssignmentOperatorShallSetNonNullKeyToNonNullIfOtherIsANonNullKey )
 {
-	static const uint8_t[] nonNullValueA = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-	static const size_t nonNullValueALength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueA[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueALength = sizeof( nonNullValueA ) / sizeof( *nonNullValueA );
 
-	static const uint8_t[] nonNullValueB = { 0x03, 0x02, 0x01, 0x00 };
-	static const size_t nonNullValueBLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueB[] = { 0x03, 0x02, 0x01, 0x00 };
+	static const size_t nonNullValueBLength = sizeof( nonNullValueB ) / sizeof( *nonNullValueB );
 
-	Key nonNullKeyA( nonNullValueA, nonNullValueALength );
-	Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
+	Pique::Key nonNullKeyA( nonNullValueA, nonNullValueALength );
+	Pique::Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
 
 	ASSERT_NE( nonNullKeyA.mKeyBuffer, nonNullKeyB.mKeyBuffer );
 
@@ -232,11 +232,11 @@ TEST( TestKey, CopyAssignmentOperatorShallSetNonNullKeyToNonNullIfOtherIsANonNul
 
 TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNullIfOtherIsANullKeyAndOtherShallBeANullKeyAfterward )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nullKey;
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nullKey;
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -251,11 +251,11 @@ TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNullIfOtherIsANullKeyAndOtherSh
 
 TEST( TestKey, MoveAssignmentShallSetNullKeyToNonNullIfOtherIsANonNullKeyAndOtherShallBeANullKeyAfterward )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nullKey;
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nullKey;
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nullKey.mKeyLength );
@@ -275,14 +275,14 @@ TEST( TestKey, MoveAssignmentShallSetNullKeyToNonNullIfOtherIsANonNullKeyAndOthe
 
 TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNonNullIfOtherIsANonNullKeyAndOtherShallBeANullKeyAfterward )
 {
-	static const uint8_t[] nonNullValueA = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-	static const size_t nonNullValueALength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueA[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueALength = sizeof( nonNullValueA ) / sizeof( *nonNullValueA );
 
-	static const uint8_t[] nonNullValueB = { 0x03, 0x02, 0x01, 0x00 };
-	static const size_t nonNullValueBLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueB[] = { 0x03, 0x02, 0x01, 0x00 };
+	static const size_t nonNullValueBLength = sizeof( nonNullValueB ) / sizeof( *nonNullValueB );
 
-	Key nonNullKeyA( nonNullValueA, nonNullValueALength );
-	Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
+	Pique::Key nonNullKeyA( nonNullValueA, nonNullValueALength );
+	Pique::Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
 
 	ASSERT_NE( nullptr, nonNullKeyA.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKeyA.mKeyLength );
@@ -302,11 +302,11 @@ TEST( TestKey, MoveAssignmentShallSetNonNullKeyToNonNullIfOtherIsANonNullKeyAndO
 
 TEST( TestKey, EqualityOperatorShallReturnFalseIfKeyLengthsAreNotEqual )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKeyA( nonNullValue, nonNullValueLength );
-	Key nonNullKeyB( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyA( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyB( nonNullValue, nonNullValueLength );
 
 	nonNullKeyB.mKeyLength = nonNullKeyA.mKeyLength + 1;
 
@@ -315,25 +315,25 @@ TEST( TestKey, EqualityOperatorShallReturnFalseIfKeyLengthsAreNotEqual )
 
 TEST( TestKey, EqualityOperatorShallReturnTrueIfBothKeysAreNull )
 {
-	Key nullKeyA;
-	Key nullKeyB;
+	Pique::Key nullKeyA;
+	Pique::Key nullKeyB;
 
-	ASSERT_TRUE( nullKeyA, nullKeyB );
+	ASSERT_TRUE( nullKeyA == nullKeyB );
 }
 
 TEST( TestKey, EqualityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndDifferingContent )
 {
-	static const uint8_t[] nonNullValueA = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-	static const size_t nonNullValueALength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueA[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueALength = sizeof( nonNullValueA ) / sizeof( *nonNullValueA );
 
-	static const uint8_t[] nonNullValueB = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x06, 0x05, 0x04 };
-	static const size_t nonNullValueBLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueB[] = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x06, 0x05, 0x04 };
+	static const size_t nonNullValueBLength = sizeof( nonNullValueB ) / sizeof( *nonNullValueB );
 
 	ASSERT_EQ( nonNullValueALength, nonNullValueBLength );
 	ASSERT_NE( 0, std::memcmp( nonNullValueA, nonNullValueB, nonNullValueALength ) );
 
-	Key nonNullKeyA( nonNullValueA, nonNullValueALength );
-	Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
+	Pique::Key nonNullKeyA( nonNullValueA, nonNullValueALength );
+	Pique::Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
 
 	ASSERT_EQ( nonNullKeyA.mKeyLength, nonNullKeyB.mKeyLength );
 	ASSERT_FALSE( nonNullKeyA == nonNullKeyB );
@@ -341,11 +341,11 @@ TEST( TestKey, EqualityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndDiff
 
 TEST( TestKey, EqualityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndEqualContent )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKeyA( nonNullValue, nonNullValueLength );
-	Key nonNullKeyB( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyA( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyB( nonNullValue, nonNullValueLength );
 
 	ASSERT_EQ( nonNullKeyA.mKeyLength, nonNullKeyB.mKeyLength );
 	ASSERT_EQ( 0, std::memcmp( nonNullKeyA.mKeyBuffer.get(), nonNullKeyB.mKeyBuffer.get(), nonNullValueLength ) );
@@ -354,11 +354,11 @@ TEST( TestKey, EqualityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndEqual
 
 TEST( TestKey, InequalityOperatorShallReturnTrueIfKeyLengthsAreNotEqual )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nullKey;
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nullKey;
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullKey.mKeyLength, nonNullKey.mKeyLength );
 	ASSERT_TRUE( nullKey != nonNullKey );
@@ -366,25 +366,25 @@ TEST( TestKey, InequalityOperatorShallReturnTrueIfKeyLengthsAreNotEqual )
 
 TEST( TestKey, InequalityOperatorShallReturnFalseIfBothKeysAreNull )
 {
-	Key nullKeyA;
-	Key nullKeyB;
+	Pique::Key nullKeyA;
+	Pique::Key nullKeyB;
 
 	ASSERT_FALSE( nullKeyA != nullKeyB );
 }
 
 TEST( TestKey, InequalityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndDifferingContent )
 {
-	static const uint8_t[] nonNullValueA = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
-	static const size_t nonNullValueALength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueA[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const size_t nonNullValueALength = sizeof( nonNullValueA ) / sizeof( *nonNullValueA );
 
-	static const uint8_t[] nonNullValueB = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x06, 0x05, 0x04 };
-	static const size_t nonNullValueBLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
+	static const uint8_t nonNullValueB[] = { 0x00, 0x01, 0x02, 0x03, 0x07, 0x06, 0x05, 0x04 };
+	static const size_t nonNullValueBLength = sizeof( nonNullValueB ) / sizeof( *nonNullValueB );
 
 	ASSERT_EQ( nonNullValueALength, nonNullValueBLength );
 	ASSERT_NE( 0, std::memcmp( nonNullValueA, nonNullValueB, nonNullValueALength ) );
 
-	Key nonNullKeyA( nonNullValueA, nonNullValueALength );
-	Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
+	Pique::Key nonNullKeyA( nonNullValueA, nonNullValueALength );
+	Pique::Key nonNullKeyB( nonNullValueB, nonNullValueBLength );
 
 	ASSERT_EQ( nonNullKeyA.mKeyLength, nonNullKeyB.mKeyLength );
 	ASSERT_NE( 0, std::memcmp( nonNullKeyA.mKeyBuffer.get(), nonNullKeyB.mKeyBuffer.get(), nonNullKeyA.mKeyLength ) );
@@ -393,11 +393,11 @@ TEST( TestKey, InequalityOperatorShallReturnTrueIfBothKeysAreOfEqualLengthAndDif
 
 TEST( TestKey, InequalityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndEqualContent )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKeyA( nonNullValue, nonNullValueLength );
-	Key nonNullKeyB( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyA( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKeyB( nonNullValue, nonNullValueLength );
 
 	ASSERT_EQ( nonNullKeyA.mKeyLength, nonNullKeyB.mKeyLength );
 	ASSERT_EQ( 0, std::memcmp( nonNullKeyA.mKeyBuffer.get(), nonNullKeyB.mKeyBuffer.get(), nonNullKeyA.mKeyLength ) );
@@ -406,24 +406,24 @@ TEST( TestKey, InequalityOperatorShallReturnFalseIfBothKeysAreOfEqualLengthAndEq
 
 TEST( TestKey, BoolOperatorShallReturnFalseIfKeyIsNull )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_FALSE( bool( nullKey ) );
 }
 
 TEST( TestKey, BoolOperatorShallReturnTrueIfKeyIsNull )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_TRUE( bool( nonNullKey ) );
 }
 
 TEST( TestKey, StringOperatorShallReturnAnEmptyStringForANullKey )
 {
-	Key nullKey;
+	Pique::Key nullKey;
 
 	std::string keyString( nullKey );
 
@@ -432,11 +432,11 @@ TEST( TestKey, StringOperatorShallReturnAnEmptyStringForANullKey )
 
 TEST( TestKey, StringOperatorShallReturnTheHexadecimalRepresentationOfTheKeyContentIfKeyIsNonNull )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 	static const std::string nonNullValueString( "0001020304050607" );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 	std::string keyString( nonNullKey );
 
 	ASSERT_EQ( nonNullValueLength * 2, keyString.size() );
@@ -445,10 +445,10 @@ TEST( TestKey, StringOperatorShallReturnTheHexadecimalRepresentationOfTheKeyCont
 
 TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsZero )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -461,10 +461,10 @@ TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsZero )
 
 TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsNonZero )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -477,10 +477,10 @@ TEST( TestKey, SetShallSetTheKeyToNullIfValueIsNullAndLengthIsNonZero )
 
 TEST( TestKey, SetShallSetTheKeyToNullIfLengthIsZeroAndValueIsNonNull )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nonNullKey( nonNullValue, nonNullValueLength );
+	Pique::Key nonNullKey( nonNullValue, nonNullValueLength );
 
 	ASSERT_NE( nullptr, nonNullKey.mKeyBuffer );
 	ASSERT_NE( 0, nonNullKey.mKeyLength );
@@ -493,10 +493,10 @@ TEST( TestKey, SetShallSetTheKeyToNullIfLengthIsZeroAndValueIsNonNull )
 
 TEST( TestKey, SetShallSetTheKeyToNonNullIfValueIsNonNullAndLengthIsNonZero )
 {
-	static const uint8_t[] nonNullValue = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
+	static const uint8_t nonNullValue[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };
 	static const size_t nonNullValueLength = sizeof( nonNullValue ) / sizeof( *nonNullValue );
 
-	Key nullKey;
+	Pique::Key nullKey;
 
 	ASSERT_EQ( nullptr, nullKey.mKeyBuffer );
 	ASSERT_EQ( 0, nullKey.mKeyLength );

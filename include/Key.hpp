@@ -24,7 +24,7 @@ namespace Pique
 class Key final
 {
 private:
-	typedef std::shared_key< const uint8_t > SharedKeyBuffer;
+	typedef std::shared_ptr< const uint8_t > SharedKeyBuffer;
 
 	mutable std::shared_mutex mKeyMutex;
 	SharedKeyBuffer mKeyBuffer;
