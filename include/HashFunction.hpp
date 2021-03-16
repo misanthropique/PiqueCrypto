@@ -6,57 +6,90 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 namespace Pique
 {
 
 /**
  * The base abstract class for hashing functions.
- * BlockSize shall be the number of bits in a block for
- * the hash functions and shall be a power of 2 greater than zero.
- * DigestSize shall be the number of bits in the digest and
- * shall be a power of 2, or zero. A DigestSize of zero shall
- * be reserved for hashing functions that have an unbounded digest size.
+ * BlockSize is the length, in bytes, that the message is broken into before
+ * the hashing procedure is performed. BlockSize is required to be greater than
+ * zero. DigestSize is the length, in bytes, of the resulting hash digest.
+ * A DigestSize of zero is reserved for hashing functions that let the user
+ * choose the digest length.
  */
-template < uint64_t BlockSize, uint64_t DigestSize,
-	typename = typename std::enable_if<
-		( 0 < BlockSize ) and ( 0 == ( BlockSize bitand ( BlockSize - 1 ) ) )
-		and ( 0 == ( DigestSize bitand ( DigestSize - 1 ) ) )
-	>::type >
+template < uint64_t BlockSize, uint64_t DigestSize >
 class HashFunction
 {
 public:
-	static const uint64_t UNBOUNDED_DIGEST = 0;
+	/**
+	 * Constant used to denote that the digest is not a fixed size.
+	 */
+	static const uint64_t UNLIMITED_DIGEST_SIZE = 0;
 
+	/**
+	 * Length of the message block size, in bytes.
+	 */
 	static const uint64_t BLOCK_SIZE = BlockSize;
 
+	/**
+	 * Length of the hash function digest. If the length is zero, then
+	 * the digest size is non-fixed.
+	 */
 	static const uint64_t DIGEST_SIZE = DigestSize;
 
+	/**
+	 * Default virtual destructor to ensure that the derived class's
+	 * destructor will be called when using the abstract class.
+	 */
 	virtual ~HashFunction() = default;
 
 	/**
 	 * Compute the digest of the message and output to {@param messageDigest}.
 	 * @param messageDigest Reference to an unsigned byte array of size DIGEST_SIZE.
 	 */
-	template < typename = typename std::enable_if< UNBOUNDED_DIGEST != DIGEST_SIZE >::type >
+	template < typename = typename std::enable_if< UNLIMITED_DIGEST_SIZE != DIGEST_SIZE >::type >
 	virtual void digest( uint8_t ( &messageDigest )[ DIGEST_SIZE ] ) = 0;
 
 	/**
-	 * Compute the digest of the message to a bit length of
-	 * {@param digestSize} and output to {@param messageDigest}.
-	 * @param messageDigest Pointer to a byte array long enough to store the requested digest.
-	 * @param digestSize The bit-length of the digest to be computed.
+	 * Compute the digest of the message and output to {@param messageDigest}.
+	 * @param messageDigest Pointer to a byte array large enough to hold the requested length.
+	 * @param digestSize Requested length of the digest, in bytes.
 	 */
-	template < typename = typename std::enable_if< UNBOUNDED_DIGEST == DIGEST_SIZE >::type >
+	template < typename = typename std::enable_if< UNLIMITED_DIGEST_SIZE == DIGEST_SIZE >::type >
 	virtual void digest( uint8_t* messageDigest, uint64_t digestSize ) = 0;
 
-	template < typename = typename std::enable_if< UNBOUNDED_DIGEST != DIGEST_SIZE >::type >
-	virtual static void digestMessage( uint8_t ( &messageDigest )[ DIGEST_SIZE ], const uint8_t* message, ) = 0;
+	/**
+	 * Compute the digest of the provided message without maintaining state information.
+	 * @param messageDigest Reference to an unsigned byte array of size DIGEST_SIZE.
+	 * @param message Pointer to an array of const bytes.
+	 * @param messageLength Length of the message in bytes.
+	 */
+	template < typename = typename std::enable_if< UNLIMITED_DIGEST_SIZE != DIGEST_SIZE >::type >
+	virtual static void digestMessage( uint8_t ( &messageDigest )[ DIGEST_SIZE ], const uint8_t* message, uint64_t messageLength ) = 0;
 
-	template < typename = typename std::enable_if< UNBOUNDED_DIGEST == DIGEST_SIZE >::type >
-	virtual static void digestMessage() = 0;
+	/**
+	 * Compute the digest of the provided message without maintaining state information.
+	 * @param messageDigest Pointer to a byte array large enough to hold the requested length.
+	 * @param digestSize Requested length of the digest, in bytes.
+	 * @param message Pointer to an array of const bytes.
+	 * @param messageLength Length of the message in bytes.
+	 */
+	template < typename = typename std::enable_if< UNLIMITED_DIGEST_SIZE == DIGEST_SIZE >::type >
+	virtual static void digestMessage( uint8_t* messageDigest, uint64_t digestSize, const uint8_t* message, uint64_t messageLength ) = 0;
 
-	virtual void update( const uint8_t* message, uint64_t 
+	/**
+	 * Incorporate the provided message segment into the hash computation.
+	 * @param message Pointer to an array of const bytes.
+	 * @param messageLength Length of the message in bytes.
+	 */
+	virtual void update( const uint8_t* message, uint64_t messageLength ) = 0;
+
+	/**
+	 * Reset the internal state of the hash function to the initial state.
+	 */
+	virtual void reset() = 0;
 };
 
 } // namespace Pique
